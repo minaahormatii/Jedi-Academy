@@ -24,23 +24,10 @@ class Masters(db.Model):
     years_training = db.Column(db.Integer())
     max_padawans = db.Column(db.Integer())
 
-    species = db.relationship(
-        "Species",
-        back_populates="masters",
-    )
-    users = db.relationship(
-        "AppUsers",
-        back_populates="master",
-    )
-    padawans = db.relationship(
-        "Padawans",
-        back_populates="master",
-        cascade="all, delete-orphan",
-    )
-    courses = db.relationship(
-        "Courses",
-        back_populates="master",
-    )
+    species = db.relationship("Species", back_populates="masters")
+    user = db.relationship("AppUsers", back_populates="master")
+    padawans = db.relationship("Padawans", back_populates="master", cascade="all, delete-orphan")
+    courses = db.relationship("Courses", back_populates="master")
 
     def __init__(self, user_id, species_id, master_name, specialization, years_training, max_padawans):
         self.user_id = user_id
@@ -54,49 +41,19 @@ class Masters(db.Model):
         return Masters("", "", "", "", 0, 0)
 
 
-# class MastersSchema(ma.Schema):
-#     class Meta:
-#         fields = [
-#             'master_id',
-#             'master_name',
-#             'specialization',
-#             'years_training',
-#             'max_padawans',
-#             'users',
-#             'species',
-#             'courses',
-#             'padawans'
-#         ]
-
-#     master_id = ma.fields.UUID()
-#     master_name = ma.fields.String(required=True)
-#     specialization = ma.fields.String(allow_none=True)
-#     years_training = ma.fields.Integer(allow_none=True)
-#     max_padawans = ma.fields.Integer(allow_none=True)
-#     users = ma.fields.Nested("AppUsersSchema")
-#     species = ma.fields.Nested("SpeciesSchema", exclude=["masters"])
-#     courses = ma.fields.Nested("CoursesSchema", many=True, exclude=["master"])
-#     padawans = ma.fields.Nested("PadawansSchema", many=True, exclude=["master"])
-
 class MastersSchema(ma.Schema):
     class Meta:
-        fields = [
-            'master_id',
-            'user_id',
-            'species_id',
-            'master_name',
-            'specialization',
-            'years_training',
-            'max_padawans'
-        ]
+        fields = ['master_id', 'master_name', 'specialization', 'years_training', 'max_padawans', 'user', 'species', 'courses', 'padawans']
 
     master_id = ma.fields.UUID()
-    user_id = ma.fields.UUID()
-    species_id = ma.fields.UUID()
     master_name = ma.fields.String(required=True)
     specialization = ma.fields.String(allow_none=True)
     years_training = ma.fields.Integer(allow_none=True)
     max_padawans = ma.fields.Integer(allow_none=True)
+    user = ma.fields.Nested("AppUsersSchema")
+    species = ma.fields.Nested("SpeciesSchema", exclude=["masters"])
+    courses = ma.fields.Nested("CoursesSchema", many=True, exclude=["master"])
+    padawans = ma.fields.Nested("PadawansSchema", many=True, exclude=["master"])
 
 
 master_schema = MastersSchema()

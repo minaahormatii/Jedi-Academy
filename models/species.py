@@ -12,15 +12,9 @@ class Species(db.Model):
     homeworld = db.Column(db.String())
     lifespan = db.Column(db.Integer())
 
-    masters = db.relationship(
-        "Masters",
-        back_populates="species"
-    )
+    masters = db.relationship("Masters", back_populates="species")
 
-    padawans = db.relationship(
-        "Padawans",
-        back_populates="species"
-    )
+    padawans = db.relationship("Padawans", back_populates="species")
 
     def __init__(self, species_name, homeworld=None, lifespan=0):
         self.species_name = species_name
@@ -39,8 +33,8 @@ class SpeciesSchema(ma.Schema):
     species_name = ma.fields.String(required=True)
     homeworld = ma.fields.String(allow_none=True)
     lifespan = ma.fields.Integer(allow_none=True)
-    masters = ma.fields.Nested("MastersSchema", many=True)
-    padawans = ma.fields.Nested("PadawansSchema", many=True)
+    masters = ma.fields.Nested("MastersSchema", many=True, exclude=["species"])
+    padawans = ma.fields.Nested("PadawansSchema", many=True, exclude=["species"])
 
 
 species_schema = SpeciesSchema()

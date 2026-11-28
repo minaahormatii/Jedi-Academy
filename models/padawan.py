@@ -11,43 +11,18 @@ class Padawans(db.Model):
     __tablename__ = "Padawans"
 
     padawan_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    master_id = db.Column(
-        UUID(as_uuid=True),
-        db.ForeignKey("Masters.master_id"),
-        nullable=False,
-    )
-    user_id = db.Column(
-        UUID(as_uuid=True),
-        db.ForeignKey("AppUsers.user_id"),
-        nullable=False,
-    )
-    species_id = db.Column(
-        UUID(as_uuid=True),
-        db.ForeignKey("Species.species_id"),
-        nullable=False,
-    )
+    master_id = db.Column(UUID(as_uuid=True), db.ForeignKey("Masters.master_id"), nullable=False)
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("AppUsers.user_id"), nullable=False)
+    species_id = db.Column(UUID(as_uuid=True), db.ForeignKey("Species.species_id"), nullable=False)
     padawan_name = db.Column(db.String(), nullable=False, unique=True)
     age = db.Column(db.Integer())
     training_level = db.Column(db.Integer())
     graduation_date = db.Column(db.Date())
 
-    species = db.relationship(
-        "Species",
-        back_populates="padawans",
-    )
-    user = db.relationship(
-        "AppUsers",
-        back_populates="padawans",
-    )
-    master = db.relationship(
-        "Masters",
-        back_populates="padawans",
-    )
-    courses = db.relationship(
-        "Courses",
-        secondary=padawans_courses_association_table,
-        back_populates="padawans",
-    )
+    species = db.relationship("Species", back_populates="padawans")
+    user = db.relationship("AppUsers", back_populates="padawans")
+    master = db.relationship("Masters", back_populates="padawans")
+    courses = db.relationship("Courses", secondary=padawans_courses_association_table, back_populates="padawans")
 
     def __init__(self, master_id, user_id, species_id, padawan_name, age=0, training_level=0, graduation_date=None):
         self.master_id = master_id
@@ -62,40 +37,9 @@ class Padawans(db.Model):
         return Padawans("", "", "", "", 0, 0, None)
 
 
-# class PadawansSchema(ma.Schema):
-#     class Meta:
-#         fields = [
-#             'padawan_id',
-#             'padawan_name',
-#             'age',
-#             'training_level',
-#             'graduation_date',
-#             'master',
-#             'user',
-#             'species'
-#         ]
-
-#     padawan_id = ma.fields.UUID()
-#     padawan_name = ma.fields.String(required=True)
-#     age = ma.fields.Integer(allow_none=True)
-#     training_level = ma.fields.Integer(allow_none=True)
-#     graduation_date = ma.fields.Date(allow_none=True)
-#     master = ma.fields.Nested("MastersSchema", exclude=["padawans"])
-#     user = ma.fields.Nested("AppUsersSchema")
-#     species = ma.fields.Nested("SpeciesSchema")
-
 class PadawansSchema(ma.Schema):
     class Meta:
-        fields = [
-            'padawan_id',
-            'master_id',
-            'user_id',
-            'species_id',
-            'padawan_name',
-            'age',
-            'training_level',
-            'graduation_date'
-        ]
+        fields = ['padawan_id', 'master_id', 'user_id', 'species_id', 'padawan_name', 'age', 'training_level', 'graduation_date', 'master', 'user', 'species']
 
     padawan_id = ma.fields.UUID()
     master_id = ma.fields.UUID()
@@ -105,6 +49,9 @@ class PadawansSchema(ma.Schema):
     age = ma.fields.Integer(allow_none=True)
     training_level = ma.fields.Integer(allow_none=True)
     graduation_date = ma.fields.Date(allow_none=True)
+    master = ma.fields.Nested("MastersSchema", only=("master_id", "master_name"))
+    user = ma.fields.Nested("AppUsersSchema", only=("user_id", "username", "email", "role"))
+    species = ma.fields.Nested("SpeciesSchema", only=("species_id", "species_name"))
 
 
 padawan_schema = PadawansSchema()

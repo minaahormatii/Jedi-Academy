@@ -9,18 +9,11 @@ class Sabers(db.Model):
     __tablename__ = "Sabers"
 
     saber_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    owner_id = db.Column(
-        UUID(as_uuid=True),
-        db.ForeignKey("AppUsers.user_id"),
-        nullable=False,
-    )
+    owner_id = db.Column(UUID(as_uuid=True), db.ForeignKey("AppUsers.user_id"), nullable=False)
     saber_name = db.Column(db.String(), nullable=False, unique=True)
     blade_color = db.Column(db.String())
 
-    user = db.relationship(
-        "AppUsers",
-        back_populates="sabers",
-    )
+    user = db.relationship("AppUsers", back_populates="sabers")
 
     def __init__(self, owner_id, saber_name, blade_color=None):
         self.owner_id = owner_id

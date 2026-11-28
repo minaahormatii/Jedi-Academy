@@ -14,10 +14,7 @@ class Temples(db.Model):
     padawan_limit = db.Column(db.Integer(), default=0)
     active = db.Column(db.Boolean(), default=True)
 
-    users = db.relationship(
-        "AppUsers",
-        back_populates="temple"
-    )
+    users = db.relationship("AppUsers", back_populates="temple")
 
     def __init__(self, temple_name, planet=None, master_count=0, padawan_limit=0, active=True):
         self.temple_name = temple_name

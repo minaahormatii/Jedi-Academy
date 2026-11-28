@@ -19,7 +19,7 @@ class AppUsers(db.Model):
 
     temple = db.relationship("Temples", back_populates="users")
     auth = db.relationship("AuthTokens", back_populates="user", cascade="all, delete-orphan")
-    master = db.relationship("Masters", back_populates="users", cascade="all, delete-orphan")
+    master = db.relationship("Masters", back_populates="user", cascade="all, delete-orphan")
     padawans = db.relationship("Padawans", back_populates="user", cascade="all, delete-orphan")
     sabers = db.relationship("Sabers", back_populates="user", cascade="all, delete-orphan")
 

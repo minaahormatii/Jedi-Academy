@@ -24,7 +24,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     f"{database_scheme}{database_user}@{database_address}:{database_port}/{database_name}"
 )
-# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = (f"{database_scheme}{database_user}@{database_address}:{database_port}/{database_name}")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = (f"{database_scheme}{database_user}@{database_address}:{database_port}/{database_name}")
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
